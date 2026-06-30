@@ -1,0 +1,1081 @@
+/* Reinicio básico */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+    background: #02030a;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Contenedor principal */
+
+#app {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(63, 44, 120, 0.55) 0%,
+            rgba(13, 18, 51, 0.45) 32%,
+            rgba(2, 3, 10, 1) 75%
+        );
+}
+
+/* Lienzo de animación */
+
+#spaceCanvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Pantalla inicial */
+
+.intro-screen {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(27, 21, 70, 0.5),
+            rgba(1, 2, 8, 0.9)
+        );
+
+    transition:
+        opacity 1s ease,
+        visibility 1s ease;
+}
+
+.intro-screen.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Contenido inicial */
+
+.intro-content {
+    width: min(600px, 100%);
+    text-align: center;
+}
+
+.intro-small-text {
+    margin: 0 0 12px;
+    color: #f3a8dc;
+    font-size: 0.95rem;
+    letter-spacing: 0.12rem;
+    text-transform: uppercase;
+}
+
+.intro-content h1 {
+    margin: 0;
+    font-size: clamp(2rem, 7vw, 4.5rem);
+    line-height: 1.05;
+    text-shadow:
+        0 0 15px rgba(255, 125, 211, 0.45),
+        0 0 35px rgba(111, 123, 255, 0.3);
+}
+
+.intro-description {
+    max-width: 480px;
+    margin: 22px auto;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    line-height: 1.6;
+}
+
+/* Botón */
+
+#startButton {
+    min-width: 170px;
+    padding: 14px 28px;
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 88, 177, 0.9),
+            rgba(116, 91, 255, 0.9)
+        );
+
+    color: white;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+
+    box-shadow:
+        0 0 20px rgba(255, 80, 178, 0.3),
+        0 0 40px rgba(94, 92, 255, 0.2);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+#startButton:hover {
+    transform: translateY(-2px) scale(1.03);
+
+    box-shadow:
+        0 0 25px rgba(255, 80, 178, 0.5),
+        0 0 50px rgba(94, 92, 255, 0.35);
+}
+
+#startButton:active {
+    transform: scale(0.97);
+}
+
+/* Mensaje romántico futuro */
+
+.message-screen {
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    z-index: 6;
+
+    width: min(310px, 36vw);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    text-align: center;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0.9);
+
+    transition:
+        opacity 1.4s ease,
+        visibility 1.4s ease,
+        transform 1.4s cubic-bezier(
+            0.16,
+            1,
+            0.3,
+            1
+        );
+}
+
+.message-screen.is-visible {
+    opacity: 1;
+    visibility: visible;
+
+    transform:
+        translate(-50%, -50%)
+        scale(1);
+}
+
+.message-small {
+    min-height: 1.3em;
+    margin: 0 0 10px;
+
+    color: rgba(255, 180, 220, 0.95);
+
+    font-size: clamp(
+        0.6rem,
+        1vw,
+        0.78rem
+    );
+
+    letter-spacing: 0.13rem;
+    line-height: 1.4;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    text-shadow:
+        0 0 10px rgba(255, 104, 185, 0.55);
+}
+
+.message-screen h2 {
+    min-height: 1.05em;
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: clamp(
+        2.4rem,
+        4.2vw,
+        3.8rem
+    );
+
+    line-height: 1;
+
+    text-shadow:
+        0 0 12px rgba(255, 255, 255, 0.55),
+        0 0 25px rgba(255, 91, 177, 0.5),
+        0 0 45px rgba(157, 94, 255, 0.3);
+}
+
+.message-description {
+    min-height: 3em;
+    max-width: 265px;
+
+    margin: 18px auto 0;
+
+    color: rgba(255, 255, 255, 0.82);
+
+    font-size: clamp(
+        0.76rem,
+        1.05vw,
+        0.92rem
+    );
+
+    line-height: 1.5;
+
+    text-shadow:
+        0 0 9px rgba(0, 0, 0, 0.85);
+}
+
+@media (max-width: 700px) {
+    .message-screen {
+        top: 47%;
+        width: min(245px, 54vw);
+        padding: 8px;
+    }
+
+    .message-small {
+        font-size: 0.58rem;
+        letter-spacing: 0.08rem;
+        white-space: normal;
+    }
+
+    .message-screen h2 {
+        font-size: clamp(
+            2rem,
+            10vw,
+            3rem
+        );
+    }
+
+    .message-description {
+        max-width: 220px;
+        margin-top: 12px;
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+}
+/* Adaptación para celulares */
+
+@media (max-width: 600px) {
+    .intro-content {
+        transform: translateY(-4%);
+    }
+
+    .intro-description {
+        margin: 18px auto;
+    }
+
+    #startButton {
+        width: min(230px, 100%);
+    }
+}
+.message-small {
+    min-height: 1.3em;
+}
+
+.message-screen h2 {
+    min-height: 1.05em;
+}
+
+.message-description {
+    min-height: 3em;
+}
+
+.typing-active::after {
+    content: "";
+
+    display: inline-block;
+
+    width: 2px;
+    height: 0.95em;
+
+    margin-left: 5px;
+
+    background: currentColor;
+
+    vertical-align: -0.08em;
+
+    box-shadow:
+        0 0 7px currentColor,
+        0 0 14px rgba(255, 120, 200, 0.7);
+
+    animation:
+        typewriter-cursor 0.7s
+        steps(1, end)
+        infinite;
+}
+
+@keyframes typewriter-cursor {
+    0%,
+    45% {
+        opacity: 1;
+    }
+
+    46%,
+    100% {
+        opacity: 0;
+    }
+}
+.music-button {
+    position: fixed;
+    top: 22px;
+    right: 22px;
+    z-index: 20;
+
+    display: grid;
+    place-items: center;
+
+    width: 46px;
+    height: 46px;
+
+    padding: 0;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.2);
+
+    border-radius: 50%;
+
+    background:
+        rgba(12, 10, 35, 0.55);
+
+    color: white;
+    font-size: 1.15rem;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 0 16px
+        rgba(255, 91, 177, 0.18);
+
+    transform: scale(0.8);
+
+    transition:
+        opacity 0.5s ease,
+        visibility 0.5s ease,
+        transform 0.5s ease,
+        background 0.25s ease;
+}
+
+.music-button.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: scale(1);
+}
+
+.music-button:hover {
+    background:
+        rgba(255, 91, 177, 0.25);
+
+    transform: scale(1.08);
+}
+
+.music-button:active {
+    transform: scale(0.94);
+}
+
+@media (max-width: 700px) {
+    .music-button {
+        top: 16px;
+        right: 16px;
+
+        width: 42px;
+        height: 42px;
+    }
+}
+.replay-button {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    z-index: 20;
+
+    padding: 11px 22px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.22);
+
+    border-radius: 999px;
+
+    background:
+        rgba(16, 10, 42, 0.65);
+
+    color: rgba(255, 255, 255, 0.9);
+
+    font: inherit;
+    font-size: 0.85rem;
+    letter-spacing: 0.04rem;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 0 18px
+        rgba(255, 81, 165, 0.18);
+
+    transform:
+        translateX(-50%)
+        translateY(15px);
+
+    transition:
+        opacity 0.7s ease,
+        visibility 0.7s ease,
+        transform 0.7s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.replay-button.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+.replay-button:hover {
+    background:
+        rgba(255, 76, 159, 0.22);
+
+    box-shadow:
+        0 0 25px
+        rgba(255, 81, 165, 0.35);
+}
+
+.replay-button:active {
+    transform:
+        translateX(-50%)
+        scale(0.96);
+}
+
+@media (max-width: 700px) {
+    .replay-button {
+        bottom: 20px;
+        padding: 10px 18px;
+        font-size: 0.78rem;
+    }
+}
+/* =========================================
+   PANTALLA DE CARGA
+========================================= */
+
+.loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+
+    display: grid;
+    place-items: center;
+
+    padding: 24px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(42, 22, 78, 1) 0%,
+            rgba(8, 8, 27, 1) 48%,
+            rgba(1, 2, 8, 1) 100%
+        );
+
+    opacity: 1;
+    visibility: visible;
+
+    transition:
+        opacity 0.8s ease,
+        visibility 0.8s ease;
+}
+
+.loading-screen.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loading-content {
+    width: min(300px, 80vw);
+    text-align: center;
+}
+
+.loading-heart {
+    color: #ff5ca8;
+
+    font-size: 4.5rem;
+    line-height: 1;
+
+    text-shadow:
+        0 0 15px rgba(255, 92, 168, 0.8),
+        0 0 35px rgba(255, 92, 168, 0.55),
+        0 0 65px rgba(179, 91, 255, 0.35);
+
+    animation:
+        loading-heartbeat 1.25s
+        ease-in-out infinite;
+}
+
+.loading-content p {
+    margin: 20px 0 16px;
+
+    color: rgba(255, 255, 255, 0.8);
+
+    font-size: 0.9rem;
+    letter-spacing: 0.08rem;
+}
+
+.loading-bar {
+    position: relative;
+
+    width: 100%;
+    height: 4px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+}
+
+.loading-bar span {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -45%;
+
+    width: 45%;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #ff5ca8,
+            #c16cff,
+            transparent
+        );
+
+    box-shadow:
+        0 0 12px rgba(255, 92, 168, 0.65);
+
+    animation:
+        loading-progress 1.4s
+        ease-in-out infinite;
+}
+
+@keyframes loading-heartbeat {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    20% {
+        transform: scale(1.14);
+    }
+
+    35% {
+        transform: scale(1);
+    }
+
+    48% {
+        transform: scale(1.08);
+    }
+
+    65% {
+        transform: scale(1);
+    }
+}
+
+@keyframes loading-progress {
+    from {
+        left: -45%;
+    }
+
+    to {
+        left: 100%;
+    }
+}
+
+#startButton:disabled {
+    opacity: 0.55;
+    cursor: wait;
+    pointer-events: none;
+}
+    .message-screen {
+        width: 82vw;
+        max-width: 310px;
+        padding: 0 12px;
+    }
+
+    .message-small {
+        font-size: 0.48rem;
+        line-height: 1.35;
+        letter-spacing: 0.055rem;
+        white-space: nowrap;
+    }
+
+    .message-screen h2 {
+        margin: 0.55rem 0 0.75rem;
+
+        font-size: clamp(
+            2.3rem,
+            12vw,
+            3rem
+        );
+
+        line-height: 1;
+    }
+
+    .message-description {
+        width: 100%;
+        max-width: 260px;
+        margin: 0 auto;
+
+        font-size: 0.73rem;
+        line-height: 1.4;
+    }
+
+    .music-button {
+        top: 16px;
+        right: 16px;
+
+        width: 42px;
+        height: 42px;
+    }
+
+    .replay-button {
+        bottom: 20px;
+
+        padding: 10px 20px;
+
+        font-size: 0.75rem;
+    }
+    .message-screen {
+        position: fixed;
+
+        top: 42.5%;
+        left: 50%;
+
+        width: 78vw;
+        max-width: 290px;
+
+        padding: 0 10px;
+
+        text-align: center;
+
+        transform:
+            translate(-50%, -50%);
+
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    .message-screen.is-visible {
+        transform:
+            translate(-50%, -50%);
+    }
+
+    .message-small {
+        width: 100%;
+        margin: 0 auto 10px;
+
+        font-size: 0.47rem;
+        line-height: 1.3;
+        letter-spacing: 0.045rem;
+
+        white-space: nowrap;
+    }
+
+    .message-screen h2 {
+        margin: 0 0 14px;
+
+        font-size: clamp(
+            2.35rem,
+            12vw,
+            3rem
+        );
+
+        line-height: 0.95;
+    }
+
+    .message-description {
+        width: 100%;
+        max-width: 245px;
+
+        margin: 0 auto;
+
+        font-size: 0.72rem;
+        line-height: 1.42;
+
+        text-align: center;
+    }
+
+    .music-button {
+        top: 16px;
+        right: 16px;
+
+        width: 42px;
+        height: 42px;
+    }
+
+    .replay-button {
+        bottom: 18px;
+
+        padding: 10px 20px;
+
+        font-size: 0.75rem;
+    }
+    /* =========================================
+   TEXTO DEFINITIVO PARA TELÉFONO
+========================================= */
+
+@media (max-width: 700px) {
+    #messageScreen {
+        position: fixed !important;
+
+        top: 44% !important;
+        left: 50% !important;
+
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        width: 220px !important;
+        max-width: 62vw !important;
+
+        padding: 18px 5px !important;
+        margin: 0 !important;
+
+        text-align: center;
+
+        transform:
+            translate(-50%, -50%) !important;
+
+        isolation: isolate;
+        z-index: 10;
+
+        pointer-events: none;
+    }
+
+    #messageScreen.is-visible {
+        transform:
+            translate(-50%, -50%) !important;
+    }
+
+    /*
+     * Fondo suave para evitar que la línea
+     * central del corazón atraviese el texto.
+     */
+    #messageScreen::before {
+        content: "";
+
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        width: 270px;
+        height: 165px;
+
+        transform:
+            translate(-50%, -50%);
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(
+                ellipse at center,
+                rgba(4, 5, 20, 0.94) 0%,
+                rgba(5, 5, 23, 0.78) 52%,
+                rgba(5, 5, 23, 0.25) 70%,
+                transparent 82%
+            );
+
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    #messageScreen > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    #messageScreen .message-small {
+        width: auto !important;
+        max-width: none !important;
+
+        margin: 0 0 11px !important;
+        padding: 0 !important;
+
+        color: #ff9dca;
+
+        font-size: 0.43rem !important;
+        font-weight: 600;
+        line-height: 1.2;
+        letter-spacing: 0.03rem !important;
+
+        text-align: center;
+        white-space: nowrap;
+
+        text-shadow:
+            0 0 6px rgba(255, 92, 168, 0.65);
+    }
+
+    #messageScreen h2 {
+    width: 100% !important;
+
+    margin: 0 0 16px !important;
+    padding: 0 !important;
+
+    color: #ffffff !important;
+
+    font-size: 2.65rem !important;
+    font-weight: 700 !important;
+    line-height: 0.95 !important;
+
+    text-align: center !important;
+
+    text-shadow:
+        0 0 7px rgba(255, 255, 255, 0.85),
+        0 0 17px rgba(255, 92, 168, 0.85),
+        0 0 30px rgba(190, 75, 255, 0.45) !important;
+}
+
+    #messageScreen .message-description {
+        width: 190px !important;
+        max-width: 54vw !important;
+
+        margin: 0 auto !important;
+        padding: 0 !important;
+
+        font-size: 0.66rem !important;
+        font-weight: 400;
+        line-height: 1.38 !important;
+
+        text-align: center;
+        text-wrap: balance;
+
+        overflow-wrap: normal;
+        word-break: normal;
+
+        text-shadow:
+            0 1px 5px rgba(0, 0, 0, 0.9);
+    }
+}
+
+/* Teléfonos especialmente pequeños */
+
+@media (max-width: 360px) {
+    #messageScreen {
+        top: 44% !important;
+        width: 205px !important;
+    }
+
+    #messageScreen .message-small {
+        font-size: 0.39rem !important;
+        letter-spacing: 0.02rem !important;
+    }
+
+    #messageScreen h2 {
+        font-size: 2.25rem !important;
+    }
+
+    #messageScreen .message-description {
+        width: 175px !important;
+        font-size: 0.63rem !important;
+    }
+}
+/* =========================================
+   CORRECCIÓN FINAL DEL TEXTO EN TELÉFONO
+========================================= */
+
+@media (max-width: 700px) {
+    #messageScreen {
+        position: fixed !important;
+
+        top: 44% !important;
+        left: 50% !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        width: 230px !important;
+        max-width: 64vw !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        text-align: center !important;
+
+        transform:
+            translate(-50%, -50%) !important;
+
+        background: transparent !important;
+
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    #messageScreen.is-visible {
+        transform:
+            translate(-50%, -50%) !important;
+    }
+
+    /*
+     * Elimina completamente el óvalo oscuro
+     * agregado anteriormente.
+     */
+    #messageScreen::before,
+    #messageScreen::after {
+        content: none !important;
+        display: none !important;
+        background: none !important;
+    }
+
+    #messageScreen > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    #messageScreen .message-small {
+        width: 100% !important;
+        max-width: none !important;
+
+        margin: 0 0 10px !important;
+        padding: 0 !important;
+
+        color: #ff9dcc !important;
+
+        font-size: 0.43rem !important;
+        font-weight: 600 !important;
+        line-height: 1.2 !important;
+        letter-spacing: 0.025rem !important;
+
+        text-align: center !important;
+        white-space: nowrap !important;
+
+        text-shadow:
+            0 0 5px rgba(255, 92, 168, 0.95),
+            0 0 12px rgba(255, 92, 168, 0.55) !important;
+    }
+
+    #messageScreen h2 {
+        width: 100% !important;
+
+        margin: 0 0 13px !important;
+        padding: 0 !important;
+
+        color: #ffffff !important;
+
+        font-size: 2.65rem !important;
+        font-weight: 700 !important;
+        line-height: 0.9 !important;
+
+        text-align: center !important;
+
+        text-shadow:
+            0 0 7px rgba(255, 255, 255, 0.85),
+            0 0 17px rgba(255, 92, 168, 0.85),
+            0 0 30px rgba(190, 75, 255, 0.45) !important;
+    }
+
+    #messageScreen .message-description {
+        width: 200px !important;
+        max-width: 56vw !important;
+
+        margin: 0 auto !important;
+        padding: 0 !important;
+
+        color: rgba(255, 255, 255, 0.94) !important;
+
+        font-size: 0.67rem !important;
+        font-weight: 400 !important;
+        line-height: 1.42 !important;
+
+        text-align: center !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        overflow-wrap: normal !important;
+        text-wrap: balance;
+
+        text-shadow:
+            0 1px 3px rgba(0, 0, 0, 1),
+            0 0 7px rgba(0, 0, 0, 0.95) !important;
+    }
+}
+
+/* =========================================
+   TELÉFONOS MUY PEQUEÑOS
+========================================= */
+
+@media (max-width: 360px) {
+    #messageScreen {
+        top: 44% !important;
+
+        width: 210px !important;
+        max-width: 66vw !important;
+    }
+
+    #messageScreen .message-small {
+        margin-bottom: 8px !important;
+
+        font-size: 0.38rem !important;
+        letter-spacing: 0.015rem !important;
+    }
+
+    #messageScreen h2 {
+        margin-bottom: 11px !important;
+
+        font-size: 2.35rem !important;
+    }
+
+    #messageScreen .message-description {
+        width: 180px !important;
+        max-width: 57vw !important;
+
+        font-size: 0.62rem !important;
+        line-height: 1.4 !important;
+    }
+}
+.message-small {
+    display: none !important;
+}

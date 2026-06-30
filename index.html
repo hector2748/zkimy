@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <meta
+        name="theme-color"
+        content="#050511"
+    >
+
+    <meta
+        name="description"
+        content="Una experiencia especial hecha con corazones y estrellas."
+    >
+
+    <title>Para Zkimy ♥</title>
+
+    <link
+        rel="stylesheet"
+        href="./css/style.css"
+    >
+</head>
+
+<body>
+    <main id="app">
+
+        <!-- =====================================
+             PANTALLA DE CARGA
+        ====================================== -->
+
+        <section
+            id="loadingScreen"
+            class="loading-screen"
+            aria-live="polite"
+            aria-label="Preparando la experiencia"
+        >
+            <div class="loading-content">
+
+                <div
+                    class="loading-heart"
+                    aria-hidden="true"
+                >
+                    ♥
+                </div>
+
+                <p>
+                    Preparando algo especial...
+                </p>
+
+                <div
+                    class="loading-bar"
+                    aria-hidden="true"
+                >
+                    <span></span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- =====================================
+             ESCENA ESPACIAL
+        ====================================== -->
+
+        <canvas
+            id="spaceCanvas"
+            aria-hidden="true"
+        ></canvas>
+
+        <!-- =====================================
+             PANTALLA INICIAL
+        ====================================== -->
+
+        <section
+            id="introScreen"
+            class="intro-screen"
+            aria-labelledby="introTitle"
+        >
+            <div class="intro-content">
+
+                <p class="intro-small">
+                    Hice algo especial
+                </p>
+
+                <h1 id="introTitle">
+                    Para ti
+                </h1>
+
+                <p class="intro-description">
+                    Presiona el botón y disfruta cada pequeño detalle.
+                </p>
+
+                <button
+                    id="startButton"
+                    class="start-button"
+                    type="button"
+                >
+                    <span aria-hidden="true">
+                        ♥
+                    </span>
+
+                    <span>
+                        Comenzar
+                    </span>
+                </button>
+
+            </div>
+        </section>
+
+        <!-- =====================================
+             MENSAJE CENTRAL
+        ====================================== -->
+
+        <section
+            id="messageScreen"
+            class="message-screen"
+            aria-live="polite"
+            aria-label="Mensaje especial"
+        >
+
+            <h2>
+                Zkimy
+            </h2>
+
+            <p class="message-description">
+                Cada pequeño corazón representa una razón para quererte.
+            </p>
+        </section>
+
+        <!-- =====================================
+             BOTÓN DE MÚSICA
+        ====================================== -->
+
+        <button
+            id="musicButton"
+            class="music-button"
+            type="button"
+            aria-label="Activar o desactivar música"
+            title="Activar o desactivar música"
+        >
+            <span
+                class="music-icon"
+                aria-hidden="true"
+            >
+                ♫
+            </span>
+        </button>
+
+        <!-- =====================================
+             BOTÓN PARA REPETIR
+        ====================================== -->
+
+        <button
+            id="replayButton"
+            class="replay-button"
+            type="button"
+            aria-label="Volver a reproducir la experiencia"
+        >
+            <span aria-hidden="true">
+                ↻
+            </span>
+
+            <span>
+                Volver a ver
+            </span>
+        </button>
+
+        <!-- =====================================
+             MÚSICA DE FONDO
+        ====================================== -->
+
+        <audio
+            id="backgroundMusic"
+            preload="auto"
+            loop
+        >
+            <source
+                src="./assets/music/cancion.mp3"
+                type="audio/mpeg"
+            >
+
+            Tu navegador no permite reproducir audio.
+        </audio>
+
+    </main>
+
+    <script
+        type="module"
+        src="./js/main.js"
+    ></script>
+</body>
+</html>
