@@ -9,6 +9,7 @@ import ShootingStar from "./effects/ShootingStar.js";
 import PulseEffect from "./effects/PulseEffect.js";
 import GlowEffect from "./effects/GlowEffect.js";
 import HeartbeatBurst from "./effects/HeartbeatBurst.js";
+import TapHeartEffect from "./effects/TapHeartEffect.js";
 
 import TextOverlay from "./ui/TextOverlay.js";
 import MusicController from "./ui/MusicController.js";
@@ -82,10 +83,10 @@ if (!context) {
    DISPOSITIVO Y ACCESIBILIDAD
 ========================================= */
 
-const isMobileDevice =
+const initialIsMobile =
     window.innerWidth <= 700;
 
-const isSmallMobile =
+const initialIsSmallMobile =
     window.innerWidth <= 480;
 
 const prefersReducedMotion =
@@ -105,11 +106,9 @@ let textStarted = false;
 
 let textFallbackTimer = null;
 
-/*
- * Visibilidad del halo.
- * Comienza completamente oculto.
- */
 let glowVisibility = 0;
+
+let resizeTimer = null;
 
 /* =========================================
    PARALLAX
@@ -124,9 +123,9 @@ let targetParallaxY = 0;
 const maximumParallax =
     prefersReducedMotion
         ? 0
-        : isSmallMobile
+        : initialIsSmallMobile
             ? 3
-            : isMobileDevice
+            : initialIsMobile
                 ? 6
                 : 13;
 
@@ -137,27 +136,27 @@ const maximumParallax =
 const totalStars =
     prefersReducedMotion
         ? 100
-        : isSmallMobile
+        : initialIsSmallMobile
             ? 130
-            : isMobileDevice
+            : initialIsMobile
                 ? 180
                 : 320;
 
 const totalFloatingHearts =
     prefersReducedMotion
         ? 6
-        : isSmallMobile
+        : initialIsSmallMobile
             ? 12
-            : isMobileDevice
+            : initialIsMobile
                 ? 18
                 : 34;
 
 const totalFormationHearts =
     prefersReducedMotion
         ? 160
-        : isSmallMobile
+        : initialIsSmallMobile
             ? 210
-            : isMobileDevice
+            : initialIsMobile
                 ? 280
                 : 440;
 
@@ -175,13 +174,13 @@ const starField =
 
 const shootingStar =
     new ShootingStar(
-        isMobileDevice
+        initialIsMobile
     );
 
 const heartSystem =
     new HeartSystem(
         totalFloatingHearts,
-        isMobileDevice
+        initialIsMobile
     );
 
 const heartShape =
@@ -189,7 +188,7 @@ const heartShape =
 
 const heartFormationSystem =
     new HeartFormationSystem(
-        isMobileDevice
+        initialIsMobile
     );
 
 /* =========================================
@@ -198,19 +197,24 @@ const heartFormationSystem =
 
 const pulseEffect =
     new PulseEffect(
-        isMobileDevice
+        initialIsMobile
     );
 
 /*
  * GlowEffect detecta el tamaño actual
- * de la pantalla directamente.
+ * de la pantalla dentro de su método draw.
  */
 const glowEffect =
     new GlowEffect();
 
 const heartbeatBurst =
     new HeartbeatBurst(
-        isMobileDevice
+        initialIsMobile
+    );
+
+const tapHeartEffect =
+    new TapHeartEffect(
+        initialIsMobile
     );
 
 /* =========================================
@@ -234,7 +238,7 @@ const musicController =
     );
 
 /* =========================================
-   INICIAR TEXTO
+   INICIAR EL TEXTO UNA SOLA VEZ
 ========================================= */
 
 function startTextOnce() {
@@ -392,10 +396,6 @@ function resizeCanvas() {
     const height =
         window.innerHeight;
 
-    /*
-     * Se detecta nuevamente el modo móvil
-     * cada vez que cambia el tamaño.
-     */
     const currentIsMobile =
         width <= 700;
 
@@ -447,6 +447,25 @@ function resizeCanvas() {
         width,
         height
     );
+}
+
+/*
+ * Evita recalcular muchas veces mientras
+ * cambia el tamaño de la ventana.
+ */
+function handleResize() {
+    if (resizeTimer !== null) {
+        window.clearTimeout(
+            resizeTimer
+        );
+    }
+
+    resizeTimer =
+        window.setTimeout(() => {
+            resizeCanvas();
+
+            resizeTimer = null;
+        }, 120);
 }
 
 /* =========================================
@@ -528,7 +547,7 @@ function animate(
     }
 
     /*
-     * Pausar cálculos mientras la pestaña
+     * Reduce el consumo cuando la pestaña
      * está oculta.
      */
     if (document.hidden) {
@@ -599,10 +618,14 @@ function animate(
         deltaTime
     );
 
-    /*
-     * Comprobar si el corazón terminó
-     * de formarse.
-     */
+    tapHeartEffect.update(
+        deltaTime
+    );
+
+    /* =====================================
+       FORMACIÓN Y TEXTO
+    ===================================== */
+
     const formationComplete =
         typeof heartFormationSystem
             .isFormationComplete ===
@@ -614,13 +637,10 @@ function animate(
         startTextOnce();
     }
 
-    /*
-     * El halo se muestra después de terminar
-     * la formación o cuando comienza el texto.
-     *
-     * textStarted funciona también como respaldo
-     * si isFormationComplete falla.
-     */
+    /* =====================================
+       APARICIÓN DEL HALO
+    ===================================== */
+
     const shouldShowGlow =
         formationComplete ||
         textStarted;
@@ -644,6 +664,10 @@ function animate(
         ) *
         glowTransition;
 
+    /* =====================================
+       LATIDO Y PARALLAX
+    ===================================== */
+
     pulseEffect.update(
         deltaTime
     );
@@ -658,10 +682,6 @@ function animate(
     const pulseIntensity =
         pulseEffect.getIntensity();
 
-    /*
-     * Las partículas solo aparecen cuando
-     * el corazón está terminado.
-     */
     if (
         !prefersReducedMotion &&
         formationComplete
@@ -814,6 +834,14 @@ function animate(
         );
     }
 
+    /* =====================================
+       CORAZONES GENERADOS AL TOCAR
+    ===================================== */
+
+    tapHeartEffect.draw(
+        context
+    );
+
     requestAnimationFrame(
         animate
     );
@@ -841,14 +869,14 @@ function startExperience() {
         performance.now();
 
     /*
-     * Iniciar música desde el clic para que
-     * el navegador permita reproducirla.
+     * Se solicita la música desde el clic
+     * para evitar bloqueos del navegador.
      */
     void musicController.start();
 
     /*
-     * Respaldo para iniciar el texto aunque
-     * falle la detección de la formación.
+     * Respaldo para mostrar el texto
+     * aunque falle la detección de formación.
      */
     textFallbackTimer =
         window.setTimeout(
@@ -866,6 +894,44 @@ function startExperience() {
 }
 
 /* =========================================
+   CREAR CORAZÓN AL TOCAR
+========================================= */
+
+function createHeartFromPointer(
+    event
+) {
+    if (!animationStarted) {
+        return;
+    }
+
+    /*
+     * En mouse solo acepta el botón izquierdo.
+     */
+    if (
+        event.pointerType === "mouse" &&
+        event.button !== 0
+    ) {
+        return;
+    }
+
+    /*
+     * No crea partículas al presionar
+     * botones de música o repetición.
+     */
+    if (
+        event.target instanceof Element &&
+        event.target.closest("button")
+    ) {
+        return;
+    }
+
+    tapHeartEffect.create(
+        event.clientX,
+        event.clientY
+    );
+}
+
+/* =========================================
    EVENTOS
 ========================================= */
 
@@ -876,7 +942,7 @@ startButton.addEventListener(
 
 window.addEventListener(
     "resize",
-    resizeCanvas
+    handleResize
 );
 
 window.addEventListener(
@@ -891,6 +957,14 @@ window.addEventListener(
             event.clientY
         );
     },
+    {
+        passive: true
+    }
+);
+
+window.addEventListener(
+    "pointerdown",
+    createHeartFromPointer,
     {
         passive: true
     }
@@ -930,7 +1004,7 @@ document.addEventListener(
 );
 
 /*
- * Mostrar el botón para repetir cuando
+ * Mostrar el botón Volver a ver cuando
  * termine el efecto de escritura.
  */
 messageScreen.addEventListener(
